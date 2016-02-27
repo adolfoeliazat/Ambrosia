@@ -9,7 +9,7 @@ export function getUser(rootValue) {
     mail: '',
     id: logID
   };
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('user').get(rootValue.cookies.get('userID')).run(rootValue.conn, function(error, result) {
         if (error) reject(error);
@@ -30,7 +30,7 @@ export function getUser(rootValue) {
 }
 
 export function getUserByID(id, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('user').get(id).run(rootValue.conn, function(error, result) {
         if (error) reject(error);
@@ -42,16 +42,16 @@ export function getUserByID(id, rootValue) {
 }
 
 export function getUserByCredentials(credentials, rootValue) {
-  return co(function*() {
+  return co(function *() {
     if (credentials.mail === '') {
       rootValue.cookies.set('userID', '');
-      return ({
+      return {
         name: '',
         mail: '',
         userID: '',
         profilePicture: '',
         id: logID
-      });
+      };
     }
     var p = new Promise((resolve, reject) => {
       r.table('user').filter(function(user) {
@@ -90,7 +90,7 @@ export function getUserByCredentials(credentials, rootValue) {
 }
 
 export function getUsers(conn) {
-  return co(function*() {
+  return co(function *() {
     var friends;
     yield r.table('user').run(conn, function(err, result) {
       friends = result;
@@ -101,7 +101,7 @@ export function getUsers(conn) {
 }
 
 export function addUser(credentials, rootValue) {
-  return co(function*() {
+  return co(function *() {
     // yield r.table('user').insert({
     //   name: credentials.name,
     //   mail: credentials.mail,
@@ -146,7 +146,7 @@ export function updateUser(args, rootValue) {
     if (args[key] !== null && key !== 'id' && key !== 'clientMutationId' && key !== 'userID') data[key] = args[key];
   }
   console.log('database:updateUser:data', data);
-  return co(function*() {
+  return co(function *() {
     var res = yield r.table('user').get(args.userID).update(data, {
       returnChanges: true
     }).run(rootValue.conn);
@@ -157,7 +157,7 @@ export function updateUser(args, rootValue) {
 export function addRestaurant({
   restaurant, userID
 }, rootValue) {
-  return co(function*() {
+  return co(function *() {
     restaurant.orders = [];
     restaurant.userID = userID;
     restaurant.location = r.point(restaurant.location[0], restaurant.location[1]);

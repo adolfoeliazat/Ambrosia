@@ -3,6 +3,7 @@ import classnames from 'classnames';
 
 import Close from '../icons/close';
 import {InputNumber} from './input';
+import Select from './select';
 
 var midnightDate;
 var week;
@@ -40,20 +41,54 @@ class Day extends React.Component {
   _switch = () => {
     this.setState({expand: !this.state.expand});
   };
-  
+
   _addHours = () => {
     week[this.props.index].openHours.push({
       from: 0,
-      to: 0
+      to: 60 * 60 * 1000
     });
     _update(week);
   };
-  
+
   _removeHours = (index) => {
     week[this.props.index].openHours.splice(index, 1);
     _update(week);
   };
-  
+
+  _onLikeDay = (index) => {
+    week[this.props.index].openHours = week[index].openHours;
+    _update(week);
+  };
+
+  _onCursorMouseDown = (e, index) => {
+    console.log('onkeydown');
+    this.state.cursorX = e.clientX;
+    this.state.id = e.target.id;
+    this.state.cursorIndex = index;
+  };
+
+  _onCursorMouseUp = (e) => {
+    console.log('onMouseUp');
+    //week[this.props.index].openHours[this.state.cursor]['to']
+    this.state.cursorX = null;
+  };
+
+  _onCursorMove = (e) => {
+    console.log('cursormove', this.state.cursorX);
+    if(!this.state.cursorX) return;
+    console.log('cursormove', this.state.id, this.state.cursorX, this.state.cursorIndex);
+    var dx = e.clientX - this.state.cursorX;
+    var factor = (864 * 100000) / this.refs.day.clientWidth;
+    if (this.state.id === 'openHours') {
+      week[this.props.index].openHours[this.state.cursorIndex]['to'] += dx * factor;
+      week[this.props.index].openHours[this.state.cursorIndex]['from'] += dx * factor;
+    } else {
+      week[this.props.index].openHours[this.state.cursorIndex][this.state.id] += dx * factor;
+    }
+    this.state.cursorX = e.clientX;
+    _update(week);
+  };
+
   render() {
     var day = week[this.props.index];
     var createSVG = (time, index) => {
@@ -65,30 +100,22 @@ class Day extends React.Component {
       var to = time.to/100000;
       return (
         <g>
-          <path d={'M'+(from < to ? from : to)+',12.5 H'+to} stroke='green' strokeWidth='25'/>
-          <path className='from' d={'M'+(from < to ? from : to)+',25 V0'} stroke='black' strokeWidth='2'/>
+          <path id='openHours' d={'M'+(from < to ? from : to)+',12.5 H'+to} stroke='green' strokeWidth='25' onMouseDown={e => this._onCursorMouseDown(e, index)}/>
+          <path id='from' className='from' d={'M'+(from < to ? from : to)+',25 V0'} stroke='black' strokeWidth='2' onMouseDown={e => this._onCursorMouseDown(e, index)} onMouseUp={this._onCursorMouseUp} onMouseMove={this._onCursorMove}/>
+          <path id='to' className='to' d={'M'+(to < from ? from : to)+',25 V0'} stroke='black' strokeWidth='2' onMouseDown={e => this._onCursorMouseDown(e, index)} onMouseUp={this._onCursorMouseUp} onMouseMove={this._onCursorMove}/>
           <text x={from < to ? from : to} y='-2.5' fill='black' style={{textAnchor: 'middle'}}>{(date.from.getHours()+ 'h' + (date.from.getMinutes() < 10 ? ('0' + date.from.getMinutes()) : date.from.getMinutes()))}</text>
           <text x={to} y='-2.5' fill='black' style={{textAnchor: 'middle'}}>{(date.to.getHours()+ 'h' + (date.to.getMinutes() < 10 ? ('0' + date.to.getMinutes()) : date.to.getMinutes()))}</text>
         </g>
       );
     }
-    var createPickers = (time, index) => {
-      return (
-        <div className='picker-wrapper'>
-          <span onClick={(e)=>this._removeHours(index)}><Close/></span>
-          <TimePicker from={index} index={this.props.index}/><strong className='to'> to </strong><TimePicker to={index} index={this.props.index}/>
-        </div>
-      );
-    }
 
     return (
-      <div className='day-container'>
-        <br/>
-          <div className={classnames('picker-container', {hidden: !this.state.expand})}>
-            {day.openHours.map(createPickers)}
-            <span className='button' onClick={this._addHours}>And...</span>
-          </div>
-        <svg className='day' viewBox='0 0 864 25' onClick={this._switch}>
+      <div className='day-container' onMouseUp={this._onCursorMouseUp} onMouseMove={this._onCursorMove}>
+        <div className = 'day-header'>
+          <span className='button'>Like <Select update = {this._onLikeDay} items={['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']} /></span>
+          <span className='button' onClick={this._addHours}><i className='fa fa-plus-square-o'/>Add Hours</span>
+        </div>
+        <svg ref='day' className='day' viewBox='0 0 864 25'>
           {day.openHours.map(createSVG)}
           <text x={432} y={15} style={{textAnchor: 'middle'}}>{day.day}</text>
         </svg>

@@ -30,6 +30,7 @@
     margin: 10% auto;
     max-width: 60%;
     max-height: 90%;
+    overflow-y: scroll;
   }
 }
 .widget-hearts-rated > .rated,
@@ -53,14 +54,21 @@
   font-size: inherit;
   text-align: center;
   margin: 0;
-  height: 1.2em;
   resize: none;
+  outline: none;
+  &:focus {
+    box-shadow: 0 0 2px 2px gold;
+  }
 }
 .widget-input {
   border: none;
   font-size: inherit;
   text-align: center;
   margin: 0;
+  outline: none;
+  &:focus {
+    box-shadow: 0 0 2px 2px gold;
+  }
 }
 .widget-dropdown {
   cursor: pointer;
@@ -88,26 +96,24 @@
 }
 .widget-opening-hours {
   text-align: center;
-  .picker-container {
-    @include flex-wrap;
-    &.hidden {
-      display: none;
-    }
-  }
-  .picker-wrapper {
-    border-radius: 5px;
-    box-shadow: 0 0 3px;
-    background-color: gold;
-    position: relative;
-    margin: 0.5em;
-    padding: 1em;
-  }
   .to {
     margin: 0.5em;
   }
   .day-container {
     width: 100%;
     margin: auto;
+    .button {
+      margin: 0 1em;
+    }
+    .day-header {
+      text-align: left;
+      visibility: hidden;
+    }
+    &:hover {
+      .day-header {
+        visibility: visible;
+      }
+    }
     .day {
       width: 90%;
       border: 1px solid;
@@ -115,6 +121,7 @@
       #from,
       #to {
         cursor: col-resize;
+        padding: 5px;
       }
       text {
         font-size: 0.75em;

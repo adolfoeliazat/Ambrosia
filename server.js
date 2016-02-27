@@ -25,7 +25,7 @@ import {ordersSeedById} from './seed/orders';
 
 import {Schema} from './server/schema';
 
-let port = process.env.PORT || 3800;
+let port = process.env.PORT || 80;
 let routes = new KoaRouter();
 var server = koa();
 

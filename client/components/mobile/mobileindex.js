@@ -28,7 +28,7 @@ export class MobileIndex extends React.Component {
       <header ref = 'header'>
       <nav className={classnames('nav-list', {expand: this.state.expand})}>
         <div className='float-left' onClick={(e)=>this.setState({expand: !this.state.expand})}><i className="fa fa-bars fa-4x"></i></div>
-        <div className='float-right'><AuthButton {...user}/></div>
+        <div className='float-right'><AuthButton {...user} /></div>
         <Link to='/' className='mobile-title'>Ambrosia</Link>
         <ul className={classnames('sub-menus')}>
           <li><i className='fa fa-user'/> Profile</li>
@@ -48,7 +48,7 @@ export class MobileIndex extends React.Component {
 const AuthButton = (props) => {
   var _logout = () => {
     console.log('logout');
-    Relay.Store.applyUpdate(new LoginMutation({credentials: {pseudo:'', password:''}, user: props}))
+    Relay.Store.commitUpdate(new LoginMutation({credentials: {pseudo:'', password:''}, user: props}))
   };
   if(props.mail === '') {
     return (
@@ -66,6 +66,7 @@ export default Relay.createContainer(MobileIndex, {
     user: () => Relay.QL`
     fragments on Root {
       user {
+        ${LoginMutation.getFragment('user')}
         mail,
         name,
         id,

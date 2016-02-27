@@ -18,20 +18,20 @@ span.submit {
   height: 3em;
 }
 div.start-index {
-  text-align: center;
   .circles {
     position: fixed;
     bottom: 0;
+    left:calc(50% - 40px);
     height: 2em;
   }
   .link-right {
     position: fixed;
-    bottom: 1em;
+    bottom: 50%;
     right: 1em;
   }
   .link-left {
     position: fixed;
-    bottom: 1em;
+    bottom: 50%;
     left: 1em;
   }
 }
@@ -89,14 +89,21 @@ div.restaurants-map {
       border: none;
     }
   }
+  .form {
+    color: white;
+  }
   .submit-button {
     cursor: pointer;
     position: absolute;
-    width: 4em;
     bottom: 1em;
     right: 1em;
     border: 1px solid white;
     border-radius: 5px;
     padding: 0.4em;
   }
+}
+
+.settings {
+  max-width: 80%;
+  margin: auto;
 }

@@ -1,3 +1,7 @@
+
+$dark-opacity: rgba(0, 0, 0, 0.7);
+$light-opacity: rgba(255, 255, 255, 0.7);
+
 @import './bourbon/bourbon';
 @import './neat/neat';
 @import "flex";
@@ -13,6 +17,7 @@
 @import "icons";
 @import "widget";
 @import "index";
+
 body {
   font-family: 'Osaka';
 }
@@ -36,6 +41,9 @@ body {
 .marged {
   margin: 1em;
 }
+.padded {
+  padding: 1em;
+}
 .center-text {
   text-align: center;
 }
@@ -55,13 +63,15 @@ body {
   overflow: hidden;
 }
 @mixin button {
-  @include linear-gradient(45deg, gold, #d1d1c9);
   font-size: 1em;
   cursor: pointer;
   position: relative;
-  padding: 0.25em;
-  border-radius: 0.25em;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: beige;
+  @include transition(background-color 0.25s linear);
   &:hover {
+    background-color: gold;
     box-shadow: 0px 0px 2px 0px black;
   }
 }

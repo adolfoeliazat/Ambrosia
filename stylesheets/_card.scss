@@ -21,7 +21,6 @@ div.shop-card {
     }
   }
 }
-
 div.card-index {
   .button {
     display: inline-block;
@@ -29,9 +28,8 @@ div.card-index {
     background: gold;
   }
 }
-
 div.shop {
-  $backcolor : gold;
+  $backcolor: gold;
   $itemcolor: gainsboro;
   margin: 0;
   .order {
@@ -119,7 +117,7 @@ div.shop {
     }
   }
   .card-order {
-    $backcolor : gold;
+    $backcolor: gold;
     $itemcolor: gainsboro;
     .foods {
       @include flex-wrap;
@@ -167,19 +165,78 @@ div.shop {
   }
 }
 .card-edit {
+  .modal {
+    .form {
+      background-color: $light-opacity;
+      border-radius: 5px;
+      .drop-zone {
+        position: relative;
+        height: 180px;
+        width: 200px;
+        margin: auto;
+        background-color: blue;
+        border: 2px solid black;
+        border-radius: 5px;
+        color: white;
+        @include transition(background-color 0.5s linear);
+        &:hover {
+          background-color: green;
+        }
+        .fa {
+          margin-top: calc(50% - 48px);
+        }
+      }
+      .picture-loaded {
+        height: 160px;
+      }
+      .button {
+        position: absolute;
+        bottom: 1em;
+        right: 1em;
+      }
+      .picture-list {
+        display: flex;
+        background-color: linen;
+        height: 160px;
+        padding: 5px;
+        overflow-x: scroll;
+        .picture-list-item {
+          height: 150px;
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+  textarea,
+  input {
+    background-color: $light-opacity;
+    border-radius: 5px;
+  }
   .icon-plus {
     position: absolute;
     cursor: pointer;
     left: 1em;
   }
-  text-align: center;
   .brand {
+    position: relative;
     text-align: center;
+    min-height: 65vh;
+    background-size: cover;
+    background-position: center;
+    background-image: url(http://kingstudcontracting.com/wp/wp-content/uploads/2015/07/restaurant.jpg);
     h1 {
-      margin: 0.5em;
+      margin: 0;
+      padding: 5vh 0 2vh;
     }
     h2 {
-      margin: 0.5em;
+      margin: 0;
+    }
+    .file-image {
+      position: absolute;
+      cursor: pointer;
+      background-color: $light-opacity;
+      bottom: 5px;
+      right: 10%;
     }
   }
   .foods {
@@ -188,14 +245,40 @@ div.shop {
     margin: 1em;
   }
   .food {
+    .file-image {
+      position: absolute;
+      cursor: pointer;
+      background-color: $light-opacity;
+      top: -8px;
+      right: -8px;
+    }
+    .icon-close {
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid grey;
+      top: -5px;
+      right: -5px;
+    }
+    .expand-icon-svg {
+      background-color: $light-opacity;
+      border-radius: 5px;
+    }
     @include flex-item;
     position: relative;
+    padding-top: 10px;
     margin: 0.5em;
-    text-align: center;
-    font-size: 1.5em;
-    padding: 1em 1em 0;
-    border: 3px solid;
-    border-radius: 10px;
+    box-shadow: -1px 1px 2px 0;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    .button-wrapper {
+      margin: 10px 10px 0;
+    }
+    .food-wrapper {
+      padding: 0 5px;
+      text-align: center;
+      display: inline-block;
+    }
     span.plus {
       position: absolute;
       top: 0.5em;
@@ -203,21 +286,20 @@ div.shop {
     }
     .meals {
       @include flex-wrap;
+      margin-top: 5px;
+      text-align: center;
       &.hidden {
         display: none;
       }
       .meal {
-        @include flex-item
-        span.close {
-          position: absolute;
-          width: 1.5em;
-          height: 1.5em;
-          top: -1em;
-          right: -1em;
-        }
         position: relative;
-        margin: 1em;
-        #price,
+        background-color: $dark-opacity;
+        color: white;
+        margin: 5px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid white;
+        @include flex-item #price,
         #time {
           width: 2em;
         }

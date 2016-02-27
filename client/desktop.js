@@ -62,8 +62,8 @@ ReactDom.render(
       <Route path='restaurant/:id' component={Ordering} queries={FullQuery}/>
       <Route path='profile' component={Profile} queries={ViewerQuery}/>
       <Route path="restaurants" component={RestaurantsIndex} queries={RestaurantsQuery}>
-        <Route path='map' component={RestaurantsMap} />
-        <Route path='list' component={RestaurantsList} />
+        <Route path='map' component={RestaurantsMap}/>
+        <Route path='list' component={RestaurantsList}/>
       </Route>
       <Route path="start" component={Start} queries={ViewerQuery}>
         <Route path='card' component={StartCard}/>
@@ -72,9 +72,9 @@ ReactDom.render(
           <Route path='/start/submit' component={StartSubmit}/>
         </Route>
       </Route>
-      <Route path="register" component={Login} queries={ViewerQuery} />
+      <Route path="register" component={Login} queries={ViewerQuery}/>
       <Route path="board/:id" component={Board} queries={FullQuery}>
-        <Route path="/settings/:id" component = {BoardSettings} queries={RestaurantQuery} />
+        <Route path="/settings/:id" component = {BoardSettings} queries={RestaurantQuery}/>
         <Route path="/timeline/:id" component = {BoardTimeLine} queries={RestaurantQuery}/>
         <Route path="/card/:id" component = {BoardCardIndex}>
           <Route path="/card/edit/:id" component= {BoardCard} queries={RestaurantQuery}/>
