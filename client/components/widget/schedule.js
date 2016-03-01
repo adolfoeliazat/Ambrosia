@@ -61,22 +61,18 @@ class Day extends React.Component {
   };
 
   _onCursorMouseDown = (e, index) => {
-    console.log('onkeydown');
     this.state.cursorX = e.clientX;
     this.state.id = e.target.id;
     this.state.cursorIndex = index;
   };
 
   _onCursorMouseUp = (e) => {
-    console.log('onMouseUp');
     //week[this.props.index].openHours[this.state.cursor]['to']
     this.state.cursorX = null;
   };
 
   _onCursorMove = (e) => {
-    console.log('cursormove', this.state.cursorX);
     if(!this.state.cursorX) return;
-    console.log('cursormove', this.state.id, this.state.cursorX, this.state.cursorIndex);
     var dx = e.clientX - this.state.cursorX;
     var factor = (864 * 100000) / this.refs.day.clientWidth;
     if (this.state.id === 'openHours') {
@@ -112,7 +108,7 @@ class Day extends React.Component {
     return (
       <div className='day-container' onMouseUp={this._onCursorMouseUp} onMouseMove={this._onCursorMove}>
         <div className = 'day-header'>
-          <span className='button'>Like <Select update = {this._onLikeDay} items={['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']} /></span>
+          <span className='button'>Like <Select update = {this._onLikeDay} selected={this.props.index} items={['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']} /></span>
           <span className='button' onClick={this._addHours}><i className='fa fa-plus-square-o'/>Add Hours</span>
         </div>
         <svg ref='day' className='day' viewBox='0 0 864 25'>

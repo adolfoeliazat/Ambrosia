@@ -20,6 +20,9 @@ export default class Textarea extends React.Component {
     this.props.onValid() || this.props.update(e);
   };
 
+  componentDidMount () {
+  }
+
   render() {
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
@@ -34,10 +37,10 @@ export default class Textarea extends React.Component {
       });
       return defaultString;
     }
-    var width = ctx.measureText(this.props.value || this.props.placeholder).width * 2.1 + 32;
+    var width = ctx.measureText(longestString() || this.props.placeholder).width * 2.1 + 32;
     return (
       <span>
-        <textarea className='widget-textarea' placeholder={this.props.placeholder} type='text' id={this.props.id} defaultValue={this.props.value} onBlur={this._onValid} onChange={this._update} rows={rows + 1} style={{width: width + 'px'}}/>
+        <textarea ref='textarea' className='widget-textarea' placeholder={this.props.placeholder} type='text' id={this.props.id} defaultValue={this.props.value} onBlur={this._onValid} onChange={this._update} rows={rows + 1} style={{width: width + 'px'}}/>
       </span>
     );
   }

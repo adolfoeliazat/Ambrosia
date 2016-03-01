@@ -232,11 +232,12 @@ div.shop {
       margin: 0;
     }
     .file-image {
-      position: absolute;
+      width: 2em;
+      height: 2em;
+      padding: 0.5em;
+      border-radius: 1em;
       cursor: pointer;
-      background-color: $light-opacity;
-      bottom: 5px;
-      right: 10%;
+      background-color: rgba(255, 255, 255, 0.7);
     }
   }
   .foods {

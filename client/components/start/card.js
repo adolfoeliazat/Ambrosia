@@ -184,13 +184,13 @@ export default class Restaurant extends React.Component {
           </div>
         </Modal>
         <div className='brand' style={{backgroundImage: `url(${restaurant.get('picture')})`}}>
-          <ImageLoader/>
           <h1 className='name'>
             <Input id={'name'} value={restaurant.get('name')} placeholder={'restaurant-name'} update={this._update}/>
           </h1>
           <h2 className='description'>
             <Textarea id={'description'} value={restaurant.get('description')} placeholder={'restaurant-description'} update={this._update}/>
           </h2>
+          <ImageLoader/>
         </div>
         <div className='marged'>
           <span className='button' onClick={this._add}><i className='fa fa-plus-square-o'/> Add Food-Type</span>
@@ -258,7 +258,7 @@ class Food extends React.Component {
         </span>
         <div className='food-wrapper'>
           <Input id={'name'} value={food.get('name')} placeholder={'food-name'} update={this._update}/><br/>
-          <Textarea id={'description'} value={food.get('description')} placeholder={'food-name'} update={this._update}/>
+          <Textarea id={'description'} value={food.get('description')} placeholder={'food-description'} update={this._update}/>
         </div>
         <div className={classnames('button-wrapper', {hidden: !this.state.expand})}><span className='button' onClick={this._addMeal}><i className='fa fa-plus-square-o'/> Add a Meal</span></div>
         <div className={classnames('meals', {'nav-wrap': this.state.expand, 'hidden': !this.state.expand})}>
