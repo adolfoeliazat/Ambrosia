@@ -6,6 +6,7 @@ import Login from './login.js';
 import LoginMutation from '../mutations/loginmutation';
 
 import Flag from './widget/flag';
+import SortButton from './widget/sortbutton';
 
 <section ref = 'header'>
   <article className='text-center'><h5><div className='button'>Become a Chief</div></h5></article>
@@ -15,6 +16,10 @@ export class Index extends React.Component {
 
   constructor(props, context) {
     super(props, context);
+    if(!localStorage.sort) localStorage.sort = 'closer';
+    this.state = {
+      selected: localStorage.sort
+    }
   }
 
   componentDidMount() {
@@ -28,6 +33,12 @@ export class Index extends React.Component {
     }
   };
 
+  _updateSort = (e) => {
+    console.log('updateSort')
+    localStorage.sort = e.target.id;
+    this.setState({selected: localStorage.sort})
+  };
+
   render() {
     //const {children, root} = this.props;
     const user = this.props.user.user;
@@ -35,14 +46,19 @@ export class Index extends React.Component {
     return (
       <div>
       <header ref = 'header'>
-      <nav className='nav-list'>
-        <div className='title'><Link to='/' >Ambrosia</Link></div>
-        <ul className='float-right'>
-          <li><Link to='/restaurants/list' className=''>Restaurants</Link></li>
-          <li><Link to='/start/card' className=''>Start!</Link></li>
-          <LoginButton {...user}/>
+        <nav className='nav-list nav-tools'>
+        <ul>
+          <li>
+            <div className='search-container'>
+              <Link className='fa'to='/'>Ambrosia</Link>
+              <input type='text' ref='name' className='search-input' placeholder='search' value={localStorage.search} onKeyDown={this._onKeyDown}/>
+              {this.props.location.pathname.match(/list/) ? <Link className='main-icon' to='/restaurants/map'><i className='fa fa-globe'/></Link> : <Link className='main-icon' to='/restaurants/list'><i className='fa fa-list'/></Link>}
+            </div>
+          </li>
+          <li><SortButton selected={this.state.selected} update={this._updateSort}/></li>
         </ul>
-      </nav>
+        <LoginButton {...user}/>
+        </nav>
       </header>
       <section ref = 'content' onScroll = {this.contentScroll} className='content'>
         {this.props.children}
@@ -68,14 +84,14 @@ class LoginButton extends React.Component {
 
   render() {
     if(this.props.mail === '') {
-      return <li><Link to='/register' className='flex-item-4 login-link'><span>Login</span></Link></li>;
+      return <li><Link to='/register' className='auth'><span>Login</span></Link></li>;
     } else {
       return (
         <li className="auth" onClick={this._expand}>
-          <a className="auth-btn">{this.props.name ? this.props.name : this.props.mail} ▼</a>
-          <div className="dropdown-content">
-            <Link to='/profile'>Profile</Link>
-            <a onClick={this._logout}>Logout</a>
+          <a className="auth-btn">{this.props.name ? this.props.name : this.props.mail}</a>
+          <div className={classnames("auth-list", {hidden: !this.state.expand})}>
+            <Link to='/profile'><i className='fa fa-user'/>Profile</Link>
+            <a onClick={this._logout}><i className='fa fa-sign-out'/>Logout</a>
           </div>
         </li>
       );

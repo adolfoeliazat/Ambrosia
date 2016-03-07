@@ -50,6 +50,10 @@ body {
 svg {
   overflow: visible;
 }
+a {
+  text-decoration: none;
+  color: black;
+}
 @for $i from 2 through 10 {
   .width-#{$i} {
     width: 100%/$i;

@@ -1,68 +1,102 @@
 header {
-  a {
-    color: white;
-  }
-  div.title {
-    display: inline-flex;
+  height: 4.5em;
+  .nav-tools {
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 1em;
+    z-index: 1;
+    position: fixed;
     a {
-      color: white;
-      font-weight: bold;
-      font-size: 2em;
-      padding: 0.25em 1em;
-      &:hover {
-        color: gold;
+      color: black;
+      text-decoration: none;
+    }
+    ul {
+      display: inline-block;
+      li {
+        float: left;
+        margin: 0 5px;
       }
     }
-  }
-  .auth {
-    position: relative;
-    &:hover {
-      .dropdown-content {
-        display: block;
+    .search-container {
+      .fa {
+        font-size: 1.5em;
+        cursor: pointer;
       }
+      box-shadow: 0 0 1px 1px;
+      position: relative;
+      border-radius: 5px;
+      padding: 0 7px;
+      height: 2em;
     }
-    .auth-btn {
-      a {
-        color: white;
-        font-weight: bold;
-        font-size: 2em;
-        padding: 0.25em 1em;
-        &:hover {
-          color: gold;
+    .auth {
+      float: right;
+    }
+    div.sort,
+    .auth {
+      background-color: white;
+      box-shadow: 0 0 1px 1px;
+      font-size: 1em;
+      cursor: pointer;
+      position: relative;
+      padding: 0.25em;
+      border-radius: 5px;
+      span.sort-selected,
+      .auth-btn {
+        &:after {
+          display: inline-block;
+          width: 0;
+          height: 0;
+          content: "";
+          vertical-align: -2px;
+          border: 4px solid;
+          border-right-color: transparent;
+          border-left-color: transparent;
+          border-bottom-color: transparent;
+        }
+      }
+      div.sort-list {
+        left: 0;
+        width: 7em;
+      }
+      div.auth-list {
+        right: 0;
+        width: 6em;
+      }
+      div.sort-list,
+      div.auth-list {
+        position: absolute;
+        top: 2.5em;
+        border-radius: 5px;
+        box-shadow: 0 0 1px 1px;
+        background-color: white;
+        text-align: left;
+        .sort-item,
+        a {
+          display: block;
+          padding: 0.25em;
+          &:hover {
+            background-color: gray;
+          }
         }
       }
     }
-    .dropdown-content {
-      width: 100%;
-      display: none;
-      position: absolute;
-      z-index: 5;
-      background-color: black;
-    }
-    .profile-link {
-      &:hover {
-        color: white;
-        border-left: 1px solid black;
-      }
+  }
+  .search-input {
+    @include linear-gradient(to top, white, beige);
+    margin: 0 0.25em;
+    font-size: 1.5em;
+    border: none;
+    width: 20em;
+    padding: 2px 5px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    &:focus {
+      outline: none;
     }
   }
-  li a,
-  .nav-item {
-    &:hover {
-      color: gold;
-    }
-  }
-}
-a {
-  padding: 1em;
-  cursor: pointer;
-  text-decoration: none;
-  color: black;
 }
 nav.nav-list {
   width: 100%;
   z-index: 5;
-  background-color: rgba(0, 0, 0, 0.7);;
   ul {
     list-style-type: none;
     margin: 0;
@@ -80,12 +114,5 @@ nav.nav-list {
   li {
     position: relative;
     display: inline-block;
-  }
-  li a,
-  .nav-item {
-    display: block;
-    text-align: center;
-    padding: 1em;
-    text-decoration: none;
   }
 }

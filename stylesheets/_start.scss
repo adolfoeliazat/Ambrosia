@@ -15,24 +15,48 @@ span.submit {
   }
 }
 .link-button {
-  height: 3em;
+  height: 4em;
+  padding: 1em;
+  background-color: $light-opacity;
+  border: 2px solid;
+  border-radius: 5px;
+  .text {
+    display: none;
+  }
+  &.right {
+    .text {
+      float: left;
+    }
+  }
+  &.left {
+    .text {
+      float: right;
+    }
+  }
+  &:hover {
+    .text {
+      display: inline-block;
+      font-size: 1.2em;
+      margin: 0 5px;
+    }
+  }
 }
 div.start-index {
   .circles {
     position: fixed;
     bottom: 0;
-    left:calc(50% - 40px);
+    left: calc(50% - 40px);
     height: 2em;
   }
   .link-right {
     position: fixed;
     bottom: 50%;
-    right: 1em;
+    right: 0;
   }
   .link-left {
     position: fixed;
     bottom: 50%;
-    left: 1em;
+    left: 0;
   }
 }
 .plus-icon-svg,
@@ -69,6 +93,7 @@ div.openarestaurant {
 div.restaurants-map {
   position: relative;
   #map {
+    position: fixed;
     height: 100%;
     width: 100%;
   }
@@ -82,11 +107,9 @@ div.restaurants-map {
     position: fixed;
     z-index: 1;
     input {
-      background-color: rgba(255, 255, 255, 0.7);
+      text-align: left;
+      background-color: $light-opacity;
       margin: 0.3em;
-      outline: none;
-      font-size: 1em;
-      border: none;
     }
   }
   .form {
@@ -102,8 +125,14 @@ div.restaurants-map {
     padding: 0.4em;
   }
 }
-
 .settings {
+  .setting {
+    display: inline-block;
+    .text {
+      float: left;
+      margin: 0 5px;
+    }
+  }
   max-width: 80%;
   margin: auto;
 }

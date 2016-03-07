@@ -97,27 +97,12 @@ export class RestaurantsIndexComponent extends React.Component {
     console.log('render', this.props.restaurant.restaurants.edges);
     return (
       <div className='restaurants-index'>
-        <nav className='nav-list nav-tools'>
-          {this.props.location.pathname.match(/list/) ? <Link className='main-icon' to='/restaurants/map'><Map size = {'2em'}/></Link> : <Link className='main-icon' to='/restaurants/list'><List size = {'2em'}/></Link>}
-        <ul>
-          <li><div className='find-more' onClick={window.onContentScrollEnd}>Find More</div></li>
-          <li><SortButton selected={this.state.selected} update={this._update}/></li>
-          <li><DisplayButton displayed={this.state.display} onClickItem={this._onChangeDisplay}/></li>
-          <li>
-            <div className='search-container'>
-              <input type='text' ref='name' className='search-input' onKeyDown={this._onKeyDown}/>
-              <button className='search-icon-wrapper'>
-                <span className='search-icon' onClick={this._submit}/>
-              </button>
-            </div>
-          </li>
-        </ul>
-        </nav>
         {this.renderChildren()}
       </div>
     )
   }
 }
+
 class DisplayButton extends React.Component {
   constructor (props, context) {
     super(props, context);
@@ -134,26 +119,6 @@ class DisplayButton extends React.Component {
           <div className='display-item'><Display array={[1,1]} onClick={this.props.onClickItem} size={'2em'}/></div>
           <div className='display-item'><Display array={[1,1,1]} onClick={this.props.onClickItem} size={'2em'}/></div>
           <div className='display-item'><Display array={[1,1,1,1]} onClick={this.props.onClickItem} size={'2em'}/></div>
-        </div>
-      </div>
-    );
-  }
-}
-
-class SortButton extends React.Component {
-  constructor (props, context) {
-    super(props, context);
-    this.state = {expand: false};
-  }
-  render () {
-    return (
-      <div className="sort" onClick={(e)=>this.setState({expand : !this.state.expand})}>
-        <i>Sort: </i>
-        <span className="sort-selected">{this.props.selected} </span>
-        <div className={classnames('sort-list', {hidden: !this.state.expand})}>
-          <div id= 'closer' onClick={this.props.update} className={classnames('sort-item', {selected: this.props.selected === 'closer'})}><Valid/>Closer</div>
-          <div id= 'rated' onClick={this.props.update} className={classnames('sort-item', {selected: this.props.selected === 'rated'})}><Valid/>Best Rated</div>
-          <div id= 'open' onClick={this.props.update} className={classnames('sort-item', {selected: this.props.selected === 'open'})}><Valid/>Open</div>
         </div>
       </div>
     );
@@ -192,6 +157,7 @@ export default Relay.createContainer(RestaurantsIndexComponent, {
               name,
               description,
               distance,
+              picture,
               reviews {
                 averageScore
               }

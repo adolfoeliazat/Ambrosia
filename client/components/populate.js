@@ -26,7 +26,7 @@ export class Populate extends React.Component {
     }
     this.setState({loading: true});
     var geolocation = JSON.parse(localStorage.geolocation);
-    request.post('http://localhost:3800/populate')
+    request.post('/populate')
     .query({
       params: localStorage.geolocation
     })

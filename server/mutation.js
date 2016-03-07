@@ -57,7 +57,7 @@ export var UserMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: (args, {
     rootValue
-  }) => co(function*() {
+  }) => co(function *() {
     var user = yield updateUser(args, rootValue);
     console.log('mutation:UserMutation', user, args);
     user.id = fromGlobalId(args.id).id;
@@ -78,7 +78,7 @@ export var SignupMutation = mutationWithClientMutationId({
     },
     id: {
       type: new GraphQLNonNull(GraphQLID)
-    },
+    }
   },
   outputFields: {
     user: {
@@ -88,7 +88,7 @@ export var SignupMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: (credentials, {
     rootValue
-  }) => co(function*() {
+  }) => co(function *() {
     var conn = rootValue;
     var newUser = yield addUser(credentials, rootValue);
     console.log('mutation:signup', newUser);
@@ -127,7 +127,7 @@ export var LoginMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: (credentials, {
     rootValue
-  }) => co(function*() {
+  }) => co(function *() {
     console.log('schema:loginmutation', credentials);
     var newUser = yield getUserByCredentials(credentials, rootValue);
     return newUser;
@@ -145,14 +145,14 @@ export var OrderMutation = mutationWithClientMutationId({
   outputFields: {
     restaurant: {
       type: GraphQLRestaurant,
-      resolve: ({order, rootValue}) => co(function* () {
+      resolve: ({order, rootValue}) => co(function * () {
         console.log('mutation:restaurant');
         return yield getRestaurant(order.restaurantID, rootValue);
       })
     },
     user: {
       type: GraphQLUser,
-      resolve: ({rootValue}) => co(function* () {
+      resolve: ({rootValue}) => co(function * () {
         console.log('mutation:user');
         return yield getUser(rootValue);
       })
@@ -190,7 +190,7 @@ export var OrderMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: (args, {
     rootValue
-  }) => co(function*() {
+  }) => co(function *() {
     //we need restaurant id plus order
     var order = args.order;
     order.restaurantID = fromGlobalId(order.restaurantID).id;
@@ -218,7 +218,7 @@ export var RestaurantMutation = mutationWithClientMutationId({
       type: GraphQLRestaurantEdge,
       resolve: ({
         newRestaurant, userID, rootValue
-      }) => co(function* () {
+      }) => co(function * () {
         console.log('restaurantMutation:getRestaurant', newRestaurant);
         //TODO replace getRestaurants with GetUserRestaurants ASAP
         var restaurants = yield getUserRestaurants(userID, rootValue);
@@ -239,7 +239,7 @@ export var RestaurantMutation = mutationWithClientMutationId({
       }
     }
   },
-  mutateAndGetPayload: ({restaurant, userID}, {rootValue}) => co(function*() {
+  mutateAndGetPayload: ({restaurant, userID}, {rootValue}) => co(function *() {
     var newRestaurant = yield addRestaurant({restaurant, userID}, rootValue);
     return {
       newRestaurant, userID, rootValue
@@ -260,7 +260,7 @@ export var UpdateRestaurantMutation = mutationWithClientMutationId({
       resolve: (restaurant) => restaurant
     }
   },
-  mutateAndGetPayload: ({restaurant}, {rootValue}) => co(function*() {
+  mutateAndGetPayload: ({restaurant}, {rootValue}) => co(function *() {
     restaurant.id = fromGlobalId(restaurant.id).id;
     return yield updateRestaurant(restaurant, rootValue);
   })
@@ -271,7 +271,7 @@ export var UpdateOrderMutation = mutationWithClientMutationId({
   inputFields: {
     order: {
       type: GraphQLInputOrder
-    },
+    }
   },
   outputFields: {
     order: {
@@ -279,7 +279,7 @@ export var UpdateOrderMutation = mutationWithClientMutationId({
       resolve: (order) => order
     }
   },
-  mutateAndGetPayload: (args, {rootValue}) => co(function*() {
+  mutateAndGetPayload: (args, {rootValue}) => co(function *() {
     args.order.id = fromGlobalId(args.order.id).id;
     if(args.order.restaurantID) args.order.restaurantID = fromGlobalId(args.order.restaurantID).id;
     return yield updateOrder(args.order, rootValue);

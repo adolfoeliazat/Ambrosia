@@ -1,6 +1,8 @@
 import r from 'rethinkdb';
 import config from '../config';
 import foods from './json/foods';
+import pictures from '../stylesheets/images/images-url.js';
+
 //length 6
 var restaurantsName = ['Vesuvio', 'La tour de Jade', 'Vesuvio', 'Le cheval blanc', 'le Khruathaï', 'Chez Ushio', 'Chez Toto'];
 //length 5
@@ -42,6 +44,7 @@ var fakeRestaurant = (userIDs, geolocation) => {
     scorable: getRandomBoolean(),
     open: getRandomBoolean(),
     schedule: getRandomSchedule(),
+    picture: pictures["background-restaurant"][getRandomInt(0, pictures["background-restaurant"].length)],
     userID: userIDs[getRandomInt(0, userIDs.length)]
   };
 };

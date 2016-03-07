@@ -180,7 +180,7 @@ div.shop {
         color: white;
         @include transition(background-color 0.5s linear);
         &:hover {
-          background-color: green;
+          box-shadow: 0 0 2px 2px black;
         }
         .fa {
           margin-top: calc(50% - 48px);
@@ -237,7 +237,7 @@ div.shop {
       padding: 0.5em;
       border-radius: 1em;
       cursor: pointer;
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: $light-opacity;
     }
   }
   .foods {
@@ -248,6 +248,11 @@ div.shop {
   .food {
     .file-image {
       position: absolute;
+      width: 2em;
+      height: 2em;
+      padding: 0.5em;
+      border-radius: 1em;
+      border: 1px solid;
       cursor: pointer;
       background-color: $light-opacity;
       top: -8px;

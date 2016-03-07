@@ -106,6 +106,10 @@ export var GraphQLFood = new GraphQLObjectType({
       type: GraphQLString,
       description: 'restaurant\'s description'
     },
+    picture: {
+      type: GraphQLString,
+      description: 'restaurant\'s picture'
+    },
     meals: {
       type: new GraphQLList(GraphQLMeal),
       description: 'List of meals'
@@ -126,6 +130,10 @@ export var GraphQLInputFood = new GraphQLInputObjectType({
     description: {
       type: GraphQLString,
       description: 'restaurant\'s description'
+    },
+    picture: {
+      type: GraphQLString,
+      description: 'restaurant\'s picture'
     },
     meals: {
       type: new GraphQLList(GraphQLInputMeal),
@@ -226,6 +234,10 @@ export var GraphQLRestaurant = new GraphQLObjectType({
     description: {
       type: GraphQLString,
       description: 'restaurant\'s description'
+    },
+    picture: {
+      type: GraphQLString,
+      description: 'restaurant\'s picture'
     },
     userID: {
       type: GraphQLString,

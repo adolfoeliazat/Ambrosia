@@ -5,15 +5,18 @@ import qs from 'koa-qs';
 import serve from 'koa-static';
 import session from 'koa-session';
 import useragent from 'useragent';
-
+import AWS from 'aws-sdk';
 import co from 'co';
+import parse from 'co-body';
 // import React from 'react';
 // import Relay from 'react-relay';
 // import ReactRouter from 'react-router';
 
 import r from 'rethinkdb';
 var config = {
-  host: process.env.NODE_ENV === 'production' ? 'rethinkdb' : 'localhost',
+  host: process.env.NODE_ENV === 'production'
+    ? 'rethinkdb'
+    : 'localhost',
   port: 28015,
   db: 'user'
 };
@@ -132,7 +135,6 @@ server.use(function * (next) {
   }
 });
 
-
 server.use(function * (next) {
   this._rdbConn.close();
   yield next;
@@ -194,7 +196,8 @@ r.connect(config, function(error, conn) {
                   }
                   console.log('Table order created');
                   r.table('order').indexCreate('userID').run(conn, function(err, result) {
-                    if (err) console.log(err);
+                    if (err)
+                      console.log(err);
                     r.table('order').indexCreate('restaurantID').run(conn, function(err, result) {
                       if (err) {
                         console.log(err);
@@ -205,7 +208,8 @@ r.connect(config, function(error, conn) {
                   });
                 });
               });
-              return yield[p, q];
+              return yield[p,
+                q];
             }).then((value) => {
               conn.close();
               server.listen(port, () => {

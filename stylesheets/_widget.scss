@@ -123,6 +123,17 @@
         cursor: col-resize;
         padding: 5px;
       }
+      .open-hours {
+        cursor: move;
+        &:hover {
+          .icon-close {
+            display: block;
+          }
+        }
+        .icon-close {
+          display: none;
+        }
+      }
       text {
         font-size: 0.75em;
       }

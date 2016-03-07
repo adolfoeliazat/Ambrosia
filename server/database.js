@@ -80,7 +80,7 @@ export function getUserByCredentials(credentials, rootValue) {
         mail: result.mail || '',
         userID: result.id,
         id: logID,
-        profilePicture: result.profilePicture || null,
+        profilePicture: result.profilePicture || null
       };
     }
     rootValue.cookies.set('userID', user.userID);
@@ -93,6 +93,7 @@ export function getUsers(conn) {
   return co(function *() {
     var friends;
     yield r.table('user').run(conn, function(err, result) {
+      if(err) throw err;
       friends = result;
     });
     console.log('database:getUsers', friends);
@@ -118,12 +119,13 @@ export function addUser(credentials, rootValue) {
       }, {
         returnChanges: true
       }).run(rootValue.conn, function(err, result) {
+        if(err) throw err;
         var new_val = result.changes[0].new_val;
         var user = {
           mail: new_val.mail,
           userID: new_val.id,
           id: logID,
-          profilePicture: new_val.profilePicture || '',
+          profilePicture: new_val.profilePicture || ''
         };
         rootValue.cookies.set('userID', new_val.id);
         resolve(user);
@@ -135,8 +137,7 @@ export function addUser(credentials, rootValue) {
 }
 /**
  * [updateUser udate user fields]
- * @param {[string]} id [rethinkdb user id]
- * @param  {[object]} user [{id: string, name: string || null, mail: string || null, profilePicture:string || null}]
+ * @param {[string]} args []
  * @param  {[object]} rootValue [graphQL rootValue object]
  * @return {[object]}      [a GrapQLUser object]
  */
@@ -163,13 +164,15 @@ export function addRestaurant({
     restaurant.location = r.point(restaurant.location[0], restaurant.location[1]);
     var data = yield r.table('restaurant').insert(restaurant, {
       returnChanges: true
-    }).run(rootValue.conn, function(err, result) {});
+    }).run(rootValue.conn, function(err, result) {
+      if(err) throw err;
+    });
     return data.changes[0].new_val;
   });
 }
 
 export function getRestaurant(id, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').get(id).run(rootValue.conn, function(err, res) {
         if (err) reject(err);
@@ -186,7 +189,7 @@ export function getRestaurant(id, rootValue) {
 
 export function getNearestRestaurants(location, rootValue) {
   if (!location) return [];
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').getNearest(r.point(location[0], location[1]), {
         index: 'location',
@@ -213,7 +216,22 @@ export function getNearestRestaurants(location, rootValue) {
 
 export function getRestaurants(args, rootValue) {
   console.log('database:getRestaurantsByName', args);
-  return co(function*() {
+  if(!args.location) {
+    return co(function *() {
+      var p = new Promise((resolve, reject) => {
+        r.table('restaurant').run(rootValue.conn, (err, res) => {
+          if(err) throw err;
+          res.toArray((err, res) => {
+            if(err) throw err;
+            console.log(res);
+            resolve(res);
+          });
+        });
+      });
+      return yield p;
+    });
+  }
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').getNearest(r.point(args.location[0], args.location[1]), {
         index: 'location',
@@ -271,7 +289,7 @@ export function getRestaurants(args, rootValue) {
 
 export function getUserRestaurants(userID, rootValue) {
   if (!userID) return [];
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').getAll(userID, {
         index: 'userID'
@@ -291,15 +309,13 @@ export function getUserRestaurants(userID, rootValue) {
 }
 /**
  * [addOrder an user order something => restaurant and user both update]
- * @param {[string]} restaurantID [description]
- * @param {[string]} userID       [description]
  * @param {[object]} order        [description]
  * @param {[object]} rootValue    [description]
  * @return {[array]} [array of both changed fields restaurant and user]
  */
 export function addOrder(order, rootValue) {
   console.log('database:addOrder', rootValue, order);
-  return co(function*() {
+  return co(function *() {
     var p = new Promise((resolve, reject) => {
       r.table('order').insert(order, {returnChanges: true}).run(rootValue.conn, (err, res) => {
         console.log('database:addOrder:res', res, err);
@@ -312,7 +328,7 @@ export function addOrder(order, rootValue) {
 }
 
 export function updateOrder(order, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise((resolve, reject) => {
       r.table('order').get(order.id).update(order, {returnChanges: true}).run(rootValue.conn, (err, res) => {
         if (err) reject(err);
@@ -326,7 +342,7 @@ export function updateOrder(order, rootValue) {
 
 export function getRestaurantOrders(args, rootValue) {
   //var endofDay = args.midnightTime + 24*60*60*1000;
-  return co(function*() {
+  return co(function *() {
     var p;
     if(args.midnightTime) {
       p = new Promise(function(resolve, reject) {
@@ -340,6 +356,7 @@ export function getRestaurantOrders(args, rootValue) {
         r.table('order').getAll(args.restaurantID, {index:'restaurantID'}).orderBy(r.desc('date')).run(rootValue.conn, (err, res) => {
           if (err) reject(err);
           res.toArray((err, res) => {
+            if(err) reject(err);
             resolve(res);
           });
         });
@@ -351,7 +368,7 @@ export function getRestaurantOrders(args, rootValue) {
 
 export function getUserOrders(args, rootValue) {
   if (!args.userID) return [];
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('order').getAll(args.userID, {index:'userID'}).orderBy(r.desc('date')).run(rootValue.conn, function(err, res) {
         if (res) {
@@ -379,7 +396,7 @@ export function getUserOrders(args, rootValue) {
  * @return {[object]}           [return the updated restaurant object]
  */
 export function updateRestaurantCard(args, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').get(args.restaurantID).update({
         name: args.card.name,
@@ -398,7 +415,7 @@ export function updateRestaurantCard(args, rootValue) {
 }
 
 export function updateRestaurant(restaurant, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').get(restaurant.id).update(restaurant, {
         returnChanges: true
@@ -413,7 +430,7 @@ export function updateRestaurant(restaurant, rootValue) {
 }
 
 export function updateRestaurantSettings(args, rootValue) {
-  return co(function*() {
+  return co(function *() {
     var p = new Promise(function(resolve, reject) {
       r.table('restaurant').get(args.restaurantID).update({
         scorable: args.scorable,

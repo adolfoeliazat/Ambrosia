@@ -11,7 +11,6 @@ var route = {card: {name:{left:'', right:'settings'}, path:{left:'', right:'/sta
 export default class Start extends React.Component {
   constructor(props, context) {
     super(props, context);
-    console.log('start constructor');
     if(!localStorage.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
       localStorage.geolocation = JSON.stringify([position.coords.longitude, position.coords.latitude]);
@@ -35,7 +34,6 @@ export default class Start extends React.Component {
         localStorage.restaurant = '';
         localStorage.settings = '';
         this.props.history.pushState({}, `/card/${restaurantID}`);
-        console.log('Mutation successful!');
         //loginRequest(Login.user);
       };
       var onFailure = (transaction) => {
@@ -46,7 +44,7 @@ export default class Start extends React.Component {
     }
   }
   componentDidMount () {
-    if(!this.props.user.user.userID) {console.log('Start:ComponentDidMount', this.props.user.user.userID);
+    if(!this.props.user.user.userID) {
       this.props.history.pushState({
         previousPath: '/start/card'
       }, '/register');}
@@ -95,19 +93,13 @@ export default class Start extends React.Component {
   }
 }
 
-class Button extends React.Component {
-  constructor (props, context) {
-    super(props, context);
-  }
-  render () {
-    return (
-      <svg className='link-button' viewBox='0 0 100 40'>
-        <path className={classnames({hidden: this.props.direction !== 'right'})} d='M0,0 L80,0 L100,20 L80,40 L0,40 Z'/>
-        <path className={classnames({hidden: this.props.direction !== 'left'})} d='M20,0 L100,0 L100,40 L20,40 L0,20 Z'/>
-        <text textAnchor='middle' x='50' y="25" fill="white">{this.props.text}</text>
-      </svg>
-    );
-  }
+var Button = (props) => {
+  var Chevron = props.direction === 'left' ? <i className='fa fa-chevron-left fa-2x'/> : <i className='fa fa-chevron-right fa-2x'/>;
+  return (
+    <div className={'link-button ' + props.direction}>
+      <span className='text'>{props.text}</span>{Chevron}
+    </div>
+  );
 }
 
 export default Relay.createContainer(Start, {

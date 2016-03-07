@@ -2,8 +2,10 @@ import React from 'react';
 import Relay from 'react-relay';
 import classnames from 'classnames';
 import {Link} from 'react-router';
+import pictures from '../../stylesheets/images/images-url.js';
 import Loading from './icons/loading';
-import Score from './icons/score';
+import Hearts from './widget/hearts';
+import {getRandomInt} from '../../utils';
 
 export default class RestaurantsList extends React.Component {
 
@@ -65,11 +67,14 @@ class Restaurant extends React.Component {
     return (
           <div className={classnames('restaurant', {selected: this.state.expand, open: restaurant.open})} key={restaurant.id} onClick={this._switchExpand}>
             <div>
-              <span className='restaurant-name'>{restaurant.name}</span><br/>
+              <span className='restaurant-name'>{restaurant.name}</span>
+              <div className='image-wrapper'>
+                <img src={restaurant.picture}/>
+                <Link className='button' to={path} onClick={(e)=>{e.stopPropagation()}}>Order!</Link>
+                {restaurant.scorable ? <Hearts rate={Math.round(restaurant.reviews.averageScore)} size={'1em'}/> : ''}
+              </div>
               <span className='restaurant-description'>{restaurant.description}</span>
               <span className='restaurant-distance'>à {Math.round(restaurant.distance)/1000} Km</span>
-              {restaurant.scorable ? <span className='restaurant-score'><Score score={restaurant.reviews.averageScore} size={'5em'}/></span> : ''}
-              <Link className='order-button' to={path} onClick={(e)=>{e.stopPropagation()}}>Order!</Link>
             </div>
             <div className={classnames('foods', {'flex': this.state.expand}, {hidden: !this.state.expand})}>
               {restaurant.foods.map(createFoods)}

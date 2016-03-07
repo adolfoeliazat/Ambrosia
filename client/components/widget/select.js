@@ -2,12 +2,12 @@ import React from 'react';
 
 var Select = (props) => {
   var _optionClick = (e) => {
-    console.log('optionClick', e, e.currentTarget);
-    props.update(e.target.id);
+    console.log('optionClick', e.target.value, e.currentTarget.value);
+    props.update(props.items.indexOf(e.target.value));
   }
   return (
-    <select className='widget-select' defaultValue={props.items[props.selected]} onClick={_optionClick}>
-      {props.items.map((item, index) => <option id={index} key={index} onClick={_optionClick}>{item}</option>)}
+    <select className='widget-select' value={props.items[props.selected]} onChange={_optionClick}>
+      {props.items.map((item, index) => <option id={index} key={index}>{item}</option>)}
     </select>
   );
 }

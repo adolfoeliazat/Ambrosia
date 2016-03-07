@@ -2,6 +2,7 @@ import React from 'react';
 import Relay from 'react-relay';
 import shallowCompare from 'react-addons-shallow-compare';
 import Immutable from 'immutable';
+import request from 'superagent';
 import Close from '../icons/close';
 import Input from '../widget/input';
 import {InputNumber} from '../widget/input';
@@ -17,7 +18,7 @@ function getRandomInt(min, max) {
 var restaurant = {
   name: '',
   description: '',
-  picture: URL["background-food"][getRandomInt(0, URL["background-food"].length)],
+  picture: URL["background-restaurant"][getRandomInt(0, URL["background-restaurant"].length)],
   foods: [
     {
       id: '_' + Math.random().toString(36).substr(2, 9),
@@ -55,8 +56,8 @@ var Plus = () => {
  */
 var ImageLoader = (props) => {
   return (
-    <i className={classnames('file-image fa fa-file-image-o fa-2x', {hidden: props.hidden})} onClick={e=>setModal({index: props.index})}/>
-  )
+    <i className={classnames('file-image fa fa-file-image-o '+props.width, {hidden: props.hidden})} onClick={e=>setModal({index: props.index})}/>
+  );
 }
 //
 // class Close extends React.Component {
@@ -73,7 +74,6 @@ export default class Restaurant extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    console.log('restaurant constructor');
     //convert restaurant object to Immutable structure
     if(localStorage.restaurant) {
       //restaurant's allready immutable when saved in localstorage
@@ -100,7 +100,6 @@ export default class Restaurant extends React.Component {
   }
 
   componentWillUnmount () {
-    console.log('RestaurantWillLeave');
     localStorage.restaurant = JSON.stringify(restaurant);
   }
 
@@ -138,7 +137,6 @@ export default class Restaurant extends React.Component {
   };
 
   _updateElementPicture = () => {
-    console.log('updateElementPicture', this.state.modal);
     if(this.state.modal.index !== undefined) {
       restaurant = restaurant.updateIn(['foods', this.state.modal.index], food => food.set('picture', this.state.modal.picture));
     } else {
@@ -150,9 +148,16 @@ export default class Restaurant extends React.Component {
   _onDrop = (e) => {
     e.preventDefault();
     var fileReader = new FileReader();
-    fileReader.readAsDataURL(e.dataTransfer.files[0]);
+    // fileReader.readAsDataURL(e.dataTransfer.files[0]);
+    // fileReader.onloadend = (e) => {
+    //   this._updateModalPicture(e.target.result);
+    // }
+    fileReader.readAsBinaryString(e.dataTransfer.files[0]);
     fileReader.onloadend = (e) => {
-      this._updateModalPicture(e.target.result);
+      request.post('/upload')
+        .send({file: e.target.result})
+        .end((err, result) => {
+        });
     }
   };
 
@@ -175,7 +180,7 @@ export default class Restaurant extends React.Component {
             <Input placeholder='url-picture' type='text' update={e=>this._updateModalPicture(null, e)}/>
             <h2>Or Choose a picture from our list</h2>
             <div className='picture-list'>
-              {URL["background-food"].map(url=><img onClick={e=>this._updateModalPicture(url)} className='picture-list-item' src={url}/>)}
+              {URL[this.state.modal ? this.state.modal.index !== undefined ? "background-food" : "background-restaurant" : "background-food"].map(url=><img onClick={e=>this._updateModalPicture(url)} className='picture-list-item' src={url}/>)}
             </div>
             <div className='padded'>
               <img className='picture-loaded' src={this.state.modal ? this.state.modal.picture : null}/>
@@ -190,7 +195,7 @@ export default class Restaurant extends React.Component {
           <h2 className='description'>
             <Textarea id={'description'} value={restaurant.get('description')} placeholder={'restaurant-description'} update={this._update}/>
           </h2>
-          <ImageLoader/>
+          <ImageLoader width='fa-2x'/>
         </div>
         <div className='marged'>
           <span className='button' onClick={this._add}><i className='fa fa-plus-square-o'/> Add Food-Type</span>
@@ -236,7 +241,6 @@ class Food extends React.Component {
   };
 
   _close = () => {
-    console.log('close');
     restaurant = restaurant.deleteIn(['foods', this.props.index]);
     updateClass();
   };
@@ -252,7 +256,7 @@ class Food extends React.Component {
     var createMeal = (meal, index) => <Meal meal={meal} parentIndex={this.props.index} index={index} key={meal.get('id')}/>;
     return (
       <div className='food flex-item-2' style={{backgroundImage: `url(${food.get('picture')})`}}>
-        <ImageLoader hidden={!this.state.expand} index={this.props.index}/>
+        <ImageLoader hidden={!this.state.expand} index={this.props.index} width=''/>
         <span className={classnames({hidden: this.state.expand})}>
           <Close onClick={this._close}/>
         </span>

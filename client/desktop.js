@@ -1,6 +1,7 @@
 require('../stylesheets/desktop.scss');
 
 import {
+  IndexRedirect,
   IndexRoute,
   browserHistory,
   Route
@@ -58,7 +59,7 @@ const FullQuery = {
 ReactDom.render(
   <RelayRouter history={browserHistory}>
     <Route path='/' component={IndexContainer} queries={ViewerQuery}>
-      <IndexRoute component={Home}/>
+      <IndexRedirect to='/restaurants/list'/>
       <Route path='restaurant/:id' component={Ordering} queries={FullQuery}/>
       <Route path='profile' component={Profile} queries={ViewerQuery}/>
       <Route path="restaurants" component={RestaurantsIndex} queries={RestaurantsQuery}>

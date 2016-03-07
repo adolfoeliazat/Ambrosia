@@ -311,7 +311,6 @@ class Order extends React.Component {
     setTimeout(() => {
       console.log('leave');
      }, 250);
-
   };
 
   render() {
