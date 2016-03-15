@@ -13,9 +13,9 @@ export class RestaurantsIndexComponent extends React.Component {
   constructor (props, context) {
     super(props, context);
     this.state = {
-      search: '',
-      selected: 'closer',
-      display: [1,1,1,1],
+      search: localStorage.search,
+      selected: localStorage.sort,
+      display: [1,1,1,1], // numer of column
       loading: false
     };
     if (!localStorage.geolocation) {
@@ -35,48 +35,22 @@ export class RestaurantsIndexComponent extends React.Component {
         });
       }
     }
+    window.onSort = () => {
+      this._update();
+    }
   }
 
-  _submit = () => {
-    console.log('submit');
-    window.restaurantName = this.refs.name.value;
+  componentWillUnmount () {
+    window.onContentScrollEnd = null;
+  }
+
+  _update = () => {
     this.props.relay.forceFetch({
-      name: this.refs.name.value
-    }, (readyState) => {
-      if (readyState.done)
-        console.log('readyState', this.props.restaurant.restaurants.edges);
-      }
-    );
-  };
-
-  _onKeyDown = (e) => {
-    console.log(e.keyCode);
-    if(e.keyCode === 13) this._submit();
-  };
-
-  _onSelect = (e) => {
-    var e = e.target;
-    console.log(e.options[e.selectedIndex].value);
-    this.setState({
-      orderByScore: e.options[e.selectedIndex].value === '2' ? true : false
-    });
-  };
-
-  _update = (e) => {
-    console.log('update', e.currentTarget.id);
-    this.state.selected = e.currentTarget.id;
-    this.props.relay.forceFetch({
-      name: this.refs.name.value || null,
-      rated: e.currentTarget.id === 'rated' ? true : false,
-      open: e.currentTarget.id === 'open' ? true : false
+      name: localStorage.search || null,
+      open: localStorage.sort === 'open' ? true : false
     }, (readyState) => {
       if (readyState.done) console.log('readystate');
     });
-  };
-
-  _onChangeDisplay = (e, array) => {
-    console.log('_onChangeDisplay');
-    this.setState({display: array});
   };
 
   renderChildren = () => {
@@ -94,7 +68,12 @@ export class RestaurantsIndexComponent extends React.Component {
   };
 
   render () {
-    console.log('render', this.props.restaurant.restaurants.edges);
+    var restaurants = this.props.restaurant.restaurants.edges;
+    if(localStorage.sort === 'rated') {
+      restaurants.sort((a, b) => {
+        return b.node.reviews.averageScore - a.node.reviews.averageScore;
+      });
+    }
     return (
       <div className='restaurants-index'>
         {this.renderChildren()}
@@ -130,9 +109,8 @@ export default Relay.createContainer(RestaurantsIndexComponent, {
     location: localStorage.geolocation
       ? JSON.parse(localStorage.geolocation)
       : null,
-    name: window.restaurantName || null,
-    rated: false,
-    open: false,
+    name: localStorage.search || null,
+    open: localStorage.sort === 'open',
     count: 20
   },
   prepareVariables: (prev) => {
@@ -141,16 +119,15 @@ export default Relay.createContainer(RestaurantsIndexComponent, {
       location: localStorage.geolocation
         ? JSON.parse(localStorage.geolocation)
         : null,
-      name: window.restaurantName || null,
-      rated: prev.rated,
-      open: prev.open,
+      name: localStorage.search || null,
+      open: localStorage.sort === 'open',
       count: prev.count,
     };
   },
   fragments: {
     restaurant: () => Relay.QL `
     fragment on Root {
-      restaurants(first: $count, location: $location, name: $name, rated: $rated, open: $open) {
+      restaurants(first: $count, location: $location, name: $name, open: $open) {
           edges {
             node {
               id,

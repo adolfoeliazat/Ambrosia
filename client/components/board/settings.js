@@ -1,6 +1,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 import {Link} from 'react-router';
+import Immutable from 'immutable';
 import classnames from 'classnames';
 import UpdateRestaurantMutation from '../../mutations/updaterestaurantmutation';
 
@@ -11,19 +12,14 @@ import Cursor from '../widget/cursor';
 import Hearts from '../widget/hearts';
 import Schedule from '../widget/schedule';
 
-var Settings;
+var restaurant;
 var _update;
 var midnightDate;
 class BoardSettings extends React.Component {
 
   constructor(props, context) {
     super(props, context);
-    var restaurant = this.props.restaurant.restaurant;
-    Settings = {
-      scorable : restaurant.scorable,
-      open: restaurant.open,
-      schedule: restaurant.schedule
-    };
+    restaurant = Immutable.fromJS(this.props.restaurant.restaurant);
     _update = () => {
       this.state.save = true;
       this.forceUpdate();
@@ -32,19 +28,14 @@ class BoardSettings extends React.Component {
   }
 
   _settingsUpdateMutation = () => {
-    var scorable = Settings.scorable;
-    var open = Settings.open;
-    var schedule = Settings.schedule;
-    schedule.map((schedule) => {
-      delete schedule.__dataID__
-      schedule.openHours.map((hours) => delete hours.__dataID__);
+    var resto = restaurant.toJS();
+    delete resto.__dataID__;
+    delete resto.orders;
+    resto.schedule.map(object => {
+      delete object.__dataID__;
+      object.openHours.map(op => delete op.__dataID__);
     });
-    var resto = {
-      id: this.props.id,
-      scorable: scorable,
-      open: open,
-      schedule: schedule
-    };
+    console.log('resto', resto);
     var onFailure = () => {
       console.log('onFailure');
     };
@@ -54,15 +45,15 @@ class BoardSettings extends React.Component {
     };
     Relay.Store.commitUpdate(new UpdateRestaurantMutation({restaurant: resto}), {onFailure, onSuccess});
   };
-
-  _switch = (e) => {
-    Settings[e.currentTarget.id] = !Settings[e.currentTarget.id];
-    _update();
-  };
+  //
+  // _switch = (e) => {
+  //   restaurant = restaurant.set(e.currentTarget.id, !restaurant.get(e.currentTarget.id));
+  //   _update();
+  // };
 
   _updateSchedule = (schedule) => {
     console.log('updateSchedule', schedule);
-    Settings.schedule = schedule;
+    restaurant = restaurant.set('schedule', schedule);
     _update();
   };
 
@@ -80,7 +71,6 @@ class BoardSettings extends React.Component {
 
   render() {
     midnightDate = new Date().setHours(0,0,0,0);
-    var restaurant = this.props.restaurant.restaurant;
     var createWeek = (day, index) => {
       return (
         <Day index={index}/>
@@ -90,11 +80,11 @@ class BoardSettings extends React.Component {
       <div className='details'>
         <span className={classnames('submit', {hidden: !this.state.save})} onClick={this._settingsUpdateMutation}>Save Changes</span>
         <h2>Checkout your Schedule</h2>
-        <Schedule week={Settings.schedule} update={this._updateSchedule}/>
+        <Schedule week={restaurant.get('schedule')} update={this._updateSchedule}/>
         <h2>Last Customer reviews</h2>
         <div className='details-reviews' onScroll = {this._onReviewsScroll}>
           <div className='details-reviews-customer'><span className='userName'><strong>Name</strong></span><span className='widget-hearts' style={{width: '5em', display:'inlineBlock'}}><strong>Rate</strong></span><strong>Comments</strong></div>
-          {restaurant.orders.edges.map((order, i) => <div className='details-reviews-customer' key={i}><span className='userName'>{order.node.userName}</span><Hearts rate={order.node.rate} size='1em'/>"{order.node.comments || 'no comments'}"</div>)}
+          {restaurant.getIn(['orders', 'edges']).map((order, i) => <div className='details-reviews-customer' key={i}><span className='userName'>{order.getIn(['node', 'userName'])}</span><Hearts rate={order.getIn(['node', 'rate'])} size='1em'/>"{order.getIn(['node', 'comments']) || 'no comments'}"</div>)}
           <Loading hidden={this.state.orderLoading} size='2em' />
         </div>
       </div>

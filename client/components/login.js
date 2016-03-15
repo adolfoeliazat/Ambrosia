@@ -21,7 +21,7 @@ class Auth extends React.Component {
     return (
       <Modal hidden={false}>
         <form id='signup' className={classnames('signup', {hidden: !this.state.toggle})} onSubmit={this._signup}>
-          <Close onClick={this._close} stroke={'white'} size={'1em'}/>
+          <Close onClick={this._close} size={'2em'}/>
           <div className='log' key='mail'>Mail<br/>
             <span className='error'>{this.state.errors.mail}</span>
             <input id='mail' key='input-mail' className='signup' type='email'/>
@@ -39,7 +39,7 @@ class Auth extends React.Component {
           <input type='submit' key='submit' value='Signup' form='signup' id='submit'/>
         </form>
       <form id='login' className={classnames('login', {hidden: this.state.toggle})} onSubmit={this._login}>
-        <Close onClick={this._close} stroke={'white'} size={'1em'}/>
+        <Close onClick={this._close} size={'2em'}/>
         <div className='social' ref='fb'><span className='facebook-icon'/>Sign in with facebook</div>
         <br/>
         <div className='log' ref='pseudo'>
@@ -65,7 +65,7 @@ class Auth extends React.Component {
 
   _close = () => {
     console.log('close');
-    this.props.history.pushState({}, '/');
+    this.props.history.push({}, '/');
   };
 
   _login = (e) => {
@@ -92,7 +92,7 @@ class Auth extends React.Component {
       }
       if(!validate(details)) {
         console.log('login', this.props.user.user.id);
-        Relay.Store.update( new LoginMutation({credentials: details, user: this.props.user.user}), {onFailure, onSuccess});
+        Relay.Store.commitUpdate( new LoginMutation({credentials: details, user: this.props.user.user}), {onFailure, onSuccess});
       } else {
         this.setState({errors: details.errors});
       }
@@ -123,7 +123,7 @@ class Auth extends React.Component {
     }
     if(!validate(details)) {
       console.log(this.props.user.user.id);
-      Relay.Store.update( new SignupMutation({credentials: details, user: this.props.user.user}), {onFailure, onSuccess});
+      Relay.Store.commitUpdate( new SignupMutation({credentials: details, user: this.props.user.user}), {onFailure, onSuccess});
     } else {
       this.setState({errors: details.errors});
     }

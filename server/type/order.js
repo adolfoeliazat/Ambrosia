@@ -25,13 +25,13 @@ export var GraphQLItem = new GraphQLObjectType({
   name: 'Item',
   fields: {
     id: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     parent: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     name: {
-      type: GraphQLString,
+      type: GraphQLString
     }
   }
 });
@@ -40,13 +40,13 @@ export var GraphQLInputItem = new GraphQLInputObjectType({
   name: 'InputItem',
   fields: {
     id: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     parent: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     name: {
-      type: GraphQLString,
+      type: GraphQLString
     },
   }
 });
@@ -108,7 +108,7 @@ export var GraphQLOrder = new GraphQLObjectType({
     userName: {
       type: GraphQLString,
       description: 'orderer name if no name return mail',
-      resolve: (order, args, {rootValue}) => co(function*() {
+      resolve: (order, args, {rootValue}) => co(function *() {
         var user = yield getUserByID(order.userID, rootValue);
         return user.name || user.mail;
       })
@@ -116,7 +116,7 @@ export var GraphQLOrder = new GraphQLObjectType({
     restaurantName: {
       type: GraphQLString,
       description: 'restaurant name for that particular order',
-      resolve: (order, args, {rootValue}) => co(function*() {
+      resolve: (order, args, {rootValue}) => co(function *() {
         var restaurant = yield getRestaurant(order.restaurantID, rootValue);
         return restaurant? restaurant.name : 'unknown';
       })

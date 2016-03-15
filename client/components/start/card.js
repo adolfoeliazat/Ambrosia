@@ -59,16 +59,6 @@ var ImageLoader = (props) => {
     <i className={classnames('file-image fa fa-file-image-o '+props.width, {hidden: props.hidden})} onClick={e=>setModal({index: props.index})}/>
   );
 }
-//
-// class Close extends React.Component {
-//   render() {
-//     return (
-//       <svg className='close-icon-svg' viewBox='0 0 80 80'>
-//         <path d='M10,10 L70,70 M70,10 L10,70'/>
-//       </svg>
-//     );
-//   }
-// }
 
 export default class Restaurant extends React.Component {
 

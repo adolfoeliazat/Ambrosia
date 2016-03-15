@@ -2,7 +2,6 @@ import React from 'react';
 import Relay from 'react-relay';
 import classnames from 'classnames';
 import {Link} from 'react-router';
-import Login from './login.js';
 import LoginMutation from '../mutations/loginmutation';
 
 import Flag from './widget/flag';
@@ -18,7 +17,8 @@ export class Index extends React.Component {
     super(props, context);
     if(!localStorage.sort) localStorage.sort = 'closer';
     this.state = {
-      selected: localStorage.sort
+      selected: localStorage.sort,
+      search: localStorage.search
     }
   }
 
@@ -37,6 +37,17 @@ export class Index extends React.Component {
     console.log('updateSort')
     localStorage.sort = e.target.id;
     this.setState({selected: localStorage.sort})
+    window.onSort ? window.onSort(): console.log('sort');
+  };
+
+  _onChangeSearchField = (e) => {
+    console.log('changesearchfield', e.keyCode, e);
+    localStorage.search = e.target.value;
+    this.setState({search: e.target.value});
+  };
+
+  _onSearchKeyDown = (e) => {
+    if(e.keyCode === 13) window.onSort ? window.onSort() : console.log('sort');
   };
 
   render() {
@@ -51,7 +62,7 @@ export class Index extends React.Component {
           <li>
             <div className='search-container'>
               <Link className='fa'to='/'>Ambrosia</Link>
-              <input type='text' ref='name' className='search-input' placeholder='search' value={localStorage.search} onKeyDown={this._onKeyDown}/>
+              <input type='text' ref='name' className='search-input' placeholder='search' value={this.state.search} onChange={this._onChangeSearchField} onKeyDown={this._onSearchKeyDown}/>
               {this.props.location.pathname.match(/list/) ? <Link className='main-icon' to='/restaurants/map'><i className='fa fa-globe'/></Link> : <Link className='main-icon' to='/restaurants/list'><i className='fa fa-list'/></Link>}
             </div>
           </li>
@@ -84,7 +95,7 @@ class LoginButton extends React.Component {
 
   render() {
     if(this.props.mail === '') {
-      return <li><Link to='/register' className='auth'><span>Login</span></Link></li>;
+      return <li className='auth'><Link to='/register'><i className='fa fa-sign-in'/><span> Login</span></Link></li>;
     } else {
       return (
         <li className="auth" onClick={this._expand}>

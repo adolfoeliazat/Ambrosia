@@ -62,8 +62,12 @@ class Profile extends React.Component {
     _hideModal = () => {
       this.setState({modal: false});
     }
+    window.onContentScrollEnd = () => {
+      this.setState({index: this.state.index += 20});
+    }
     this.state = {
       modal: false,
+      index: 20,
       update: {
         name: user.name ? user.name : 'Your name here',
         mail: user.mail ? user.mail : 'Your mail here',
@@ -112,9 +116,11 @@ class Profile extends React.Component {
   render() {
     var user = this.props.user.user;
     var createRestaurant = (resto, index) => {
+      if(index > this.state.index) return;
       return <Link to ={'/timeline/'+resto.node.id} className='restaurant' key={resto.node.id}>{resto.node.name}<Hearts rate={Math.round(resto.node.reviews.averageScore)} size={'1em'}/></Link>;
     };
     var createOrder = (order, index) => {
+      if(index > this.state.index) return;
       return <Order order={order}/>
     };
     var treatedOrders = user.orders.edges.filter((order) => {return order.node.treated});
@@ -163,7 +169,7 @@ class Order extends React.Component {
   _update = (e) => {
     this.setState({[e.target.id]: e.target.value});
   };
-  
+
   _onClick = (e, i) => {
     console.log(e.currentTarget, e.target, i);
     e.stopPropagation();

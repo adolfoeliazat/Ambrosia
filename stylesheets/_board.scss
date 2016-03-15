@@ -68,6 +68,10 @@ div.chief-index {
   }
 }
 div.board {
+  .fulfill {
+    display: inline-block;
+    margin: 5px 0;
+  }
   div.nav {
     a {
       text-decoration: none;
@@ -137,11 +141,6 @@ div.board {
   }
   div.timeline {
     text-align: center;
-    .fulfill {
-      position: fixed;
-      bottom: 1em;
-      right: 1em;
-    }
     span.play {
       margin: 0 0.5em;
       float: left;

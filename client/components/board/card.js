@@ -1,16 +1,27 @@
 import React from 'react';
 import Relay from 'react-relay';
-import classnames from 'classnames';
 import UpdateRestaurantMutation from '../../mutations/updaterestaurantmutation';
 
-import Plus from '../icons/plus'
+import Close from '../icons/close'
 
 import Input from '../widget/input';
 import Textarea from '../widget/textarea';
+import classnames from 'classnames';
 
 var card;
 //list of var to be used on each component
 var updateClass;
+
+/**
+ * [description]
+ * @param  {[object]} props [pass in the element index props.index]
+ * @return {[type]}       [description]
+ */
+var ImageLoader = (props) => {
+  return (
+    <i className={classnames('file-image fa fa-file-image-o '+props.width, {hidden: props.hidden})} onClick={e=>setModal({index: props.index})}/>
+  );
+}
 
 export class Card extends React.Component {
 
@@ -21,7 +32,8 @@ export class Card extends React.Component {
       card = {
         name: restaurant.name,
         description: restaurant.description,
-        foods: restaurant.foods
+        foods: restaurant.foods,
+        picture: restaurant.picture
       };
     }
     this.state = card;
@@ -85,19 +97,22 @@ export class Card extends React.Component {
     }
     return (
       <div className='card-edit'>
-        <Plus onClick={this._add} size={'2em'}/>
         <span className={classnames('submit', {hidden: !this.state.save})} onClick={this._cardUpdateMutation}>
           Save changes
         </span>
-        <div className='brand'>
+        <div className='brand' style={{backgroundImage: `url(${this.state.picture})`}}>
           <h1 className='name'>
             <Input id={'name'} value={this.state.name} default={'restaurant-name'} update={this._update}/>
           </h1>
           <h2 className='description'>
             <Textarea id={'description'} value={this.state.description} default={'restaurant-description'} update={this._update}/>
           </h2>
+          <ImageLoader width='fa-2x'/>
         </div>
-        <div className='foods'>
+        <div className='marged'>
+          <span className='button' onClick={this._add}><i className='fa fa-plus-square-o'/> Add Food-Type</span>
+        </div>
+        <div className='foods nav-wrap'>
           {this.state.foods.map(createFood)}
         </div>
       </div>
@@ -149,23 +164,23 @@ class Food extends React.Component {
 
   render () {
     var food = this.props;
+    console.log(food);
     var createMeal = (meal, index) => <Meal {...meal} parentIndex={this.props.index} index={index} key={meal.id}/>;
     return (
-      <div className='food flex-item-2'>
-        <span className='close' onClick={this._close}>
-          <Close/>
+      <div className='food flex-item-2' style={{backgroundImage: `url(${food.picture})`}}>
+        <ImageLoader hidden={!this.state.expand} index={this.props.index} width=''/>
+        <span className={classnames({hidden: this.state.expand})}>
+          <Close onClick={this._close}/>
         </span>
-        <Input id={'name'} value={this.props.name} default={'food-name'} update={this._update}/><br/>
-        <Input id={'description'} value={this.props.description} default={'food-name'} update={this._update}/>
-        <div className={classnames('meals', {
-          'hidden': !this.state.expand
-        })}>
-          <span className='plus' onClick={this._addMeal}>
-            <Plus/>
-          </span>
+        <div className='food-wrapper'>
+          <Input id={'name'} value={this.props.name} placeholder={'food-name'} update={this._update}/><br/>
+          <Textarea id={'description'} value={this.props.description} placeholder={'food-description'} update={this._update}/>
+        </div>
+        <div className={classnames('button-wrapper', {hidden: !this.state.expand})}><span className='button' onClick={this._addMeal}><i className='fa fa-plus-square-o'/> Add a Meal</span></div>
+        <div className={classnames('meals', {'nav-wrap': this.state.expand, 'hidden': !this.state.expand})}>
           {this.props.meals.map(createMeal)}
         </div>
-        <div onClick={this._switchExpand}>
+        <div className='center-text' onClick={this._switchExpand}>
           <svg className='expand-icon-svg' viewBox='0 0 80 60'>
             <path className='expand-icon-path' d={this.state.expand
               ? 'M0,60 L40,0 L80,60'
@@ -209,33 +224,11 @@ class Meal extends React.Component {
     var food = this.props;
     return (
       <div className='meal flex-item-2'>
-        <span className='close' onClick={this._close}>
-          <Close/>
-        </span>
+        <Close onClick={this._close}/>
         <Input id={'name'} value={this.props.name} default={'meal-name'} update={this._update}/><br/>
         <Input id={'description'} value={this.props.description} default={'meal-description'} update={this._update}/><br/>
         <span id='price'><Input type={'number'} id='price' default={0} value={this.props.price} update={this._update}/>mB</span><br/>
       </div>
-    );
-  }
-}
-
-// class Plus extends React.Component{
-//   render() {
-//     return (
-//       <svg className='plus-icon-svg' viewBox='0 0 80 80'>
-//         <path d='M0,40 L80,40 M40,0 L40,80'/>
-//       </svg>
-//     );
-//   }
-// }
-
-class Close extends React.Component {
-  render() {
-    return (
-      <svg className='close-icon-svg' viewBox='0 0 80 80'>
-        <path d='M10,10 L70,70 M70,10 L10,70'/>
-      </svg>
     );
   }
 }
@@ -250,10 +243,12 @@ export default Relay.createContainer(Card, {
         id,
         name,
         description,
+        picture,
         foods {
           id,
           name,
           description,
+          picture,
           meals {
             id,
             name,

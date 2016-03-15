@@ -84,7 +84,7 @@ routes.post('/populate', function * () {
 });
 import {fromGlobalId} from 'graphql-relay';
 routes.post('/populate/order', function * () {
-  console.log('populate/order');
+  console.log('populate/order', this.query.params);
   yield ordersSeedById(fromGlobalId(this.query.params).id, this._rdbConn);
   this.body = 'database populated';
 });

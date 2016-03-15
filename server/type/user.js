@@ -78,7 +78,7 @@ export var GraphQLUser = new GraphQLObjectType({
     },
     profilePicture: {
       type: GraphQLString,
-      description: 'the url of profile image'
+      description: 'profile image url'
     },
     orders: {
       type: ordersConnection,

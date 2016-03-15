@@ -268,7 +268,6 @@ export var GraphQLRestaurant = new GraphQLObjectType({
             comments = [];
         console.log('schemaRestaurnat:getScore');
         var orders = yield getRestaurantOrders({restaurantID}, rootValue);
-        console.log('database:getRestaurantOrders', orders);
         orders.map(order => {
           if(order.rate) {
             comments.push(order.comment || null);

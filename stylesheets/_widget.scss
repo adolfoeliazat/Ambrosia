@@ -26,6 +26,8 @@
   z-index: 5;
   .form {
     @include animation(comes-in 0.25s $ease-in-out-quint);
+    background-color: ghostwhite;
+    border-radius: 5px;
     position: relative;
     margin: 10% auto;
     max-width: 60%;

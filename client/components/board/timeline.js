@@ -72,11 +72,27 @@ class Board extends React.Component {
     clearInterval(intervalID);
   }
 
+  _populate = () => {
+    request.post('/populate/order')
+    .query({
+      params: this.props.id
+    })
+    .end((err, res) => {
+      if(err) console.error(err);
+      this.props.relay.forceFetch({
+        midnightTime: midnightTime
+      }, (readyState) => {
+        if(readyState.done) console.log('updated!!!')
+      })
+    });
+  };
+
   render() {
     var orders = filterOrder(this.props.restaurant.restaurant.orders.edges);
     return (
       <div className='board' onScroll={e=>e.preventDefault()}>
         <TimeLine orders={orders} relay={this.props.relay} time={time} id={this.props.id}/>
+        <span className='button fulfill' onClick={this._populate}>Fulfill with orders</span>
         <Dashboard orders = {orders} restaurantID={this.props.id}/>
       </div>
     );
@@ -157,22 +173,7 @@ class TimeLine extends React.Component {
     console.log('restaurantMutation', resto);
     var onFailure = () => console.log('failure');
     var onSuccess = () => console.log('success');
-    Relay.Store.update(new UpdateRestaurantMutation({restaurant: resto}), {onFailure, onSuccess});
-  };
-
-  _populate = () => {
-    request.post('http://localhost:3800/populate/order')
-    .query({
-      params: this.props.id
-    })
-    .end((err, res) => {
-      if(err) console.error(err);
-      this.props.relay.forceFetch({
-        midnightTime: midnightTime
-      }, (readyState) => {
-        if(readyState.done) console.log('updated!!!')
-      })
-    });
+    Relay.Store.applyUpdate(new UpdateRestaurantMutation({restaurant: resto}), {onFailure, onSuccess});
   };
 
   componentWillReceiveProps () {
@@ -201,8 +202,8 @@ class TimeLine extends React.Component {
         <path d='M0,400 H8640' stroke = 'black' strokeWidth = '1'/>
         <rect className = 'cursor' x={this.state.x} y='0' width='20' height='800' fill = 'yellow'/>
         {this.props.orders.map(createOrders)}
-        <text textAnchor='middle' x='4320' y='300' fill='rgba(255, 255, 255, 0.8)' fontSize='200'>{timeLineDate.getDate() +'/'+ (timeLineDate.getMonth() + 1) +'/'+ timeLineDate.getFullYear()}</text>
-        <text textAnchor='middle' x='4320' y='700' fill='rgba(255, 255, 255, 0.8)' fontSize='200'>{timeLineDate.getHours() +':'+ (timeLineDate.getMinutes() < 10 ? '0'+timeLineDate.getMinutes() : timeLineDate.getMinutes())}</text>
+        <text textAnchor='middle' x='4320' y='300' fill='rgba(255, 255, 255, 0.8)' stroke='black' strokeWidth='3' fontSize='200'>{timeLineDate.getDate() +'/'+ (timeLineDate.getMonth() + 1) +'/'+ timeLineDate.getFullYear()}</text>
+        <text textAnchor='middle' x='4320' y='700' fill='rgba(255, 255, 255, 0.8)' stroke='black' strokeWidth='3' fontSize='200'>{timeLineDate.getHours() +':'+ (timeLineDate.getMinutes() < 10 ? '0'+timeLineDate.getMinutes() : timeLineDate.getMinutes())}</text>
       </svg>
       <nav className='nav-list'>
         <span className={classnames('play flex-item-2', {hidden: this.state.play})} onClick={this.onPlay} />
@@ -216,7 +217,6 @@ class TimeLine extends React.Component {
             Busy: <Input type='number' id='busy' value={params.busy} update={this._update} onValid={this._updateRestaurantMutation}/>minutes
           </li>
         </ul>
-        <span className='button fulfill' onClick={this._populate}>Fulfill with orders</span>
       </nav>
     </div>
     );

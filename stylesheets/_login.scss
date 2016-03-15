@@ -1,4 +1,3 @@
-
 input#submit {
   font-size: 1em;
   background-color: black;
@@ -13,13 +12,11 @@ input#submit {
   }
 }
 #signup,#login {
-  color: white;
   input {
     font-size: 1em;
     background-color: rgba(10, 10, 10, 0);
     border: 2px solid;
     font-family: inherit;
-    color: white;
   }
   div.question {
     margin: 2em;
